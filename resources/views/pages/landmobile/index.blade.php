@@ -6,14 +6,16 @@
 
 @section('content')
     <div class="container-fluid pt-4 px-4">
-        <form id="import" action="{{ route('landmobiles.import') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            <div class="mb-3">
-                <label for="import_file" class="form-label">Import File :</label>
-                <input class="form-control" type="file" name="import_file" id="import_file">
-            </div>
-            <button type="submit" class="btn btn-primary mb-3"><i class="fa fa-upload me-2"></i>Import</button>
-        </form>
+        @if (auth()->user()->role == 'admin' || auth()->user()->role == 'operator')
+            <form id="import" action="{{ route('landmobiles.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="mb-3">
+                    <label for="import_file" class="form-label">Import File :</label>
+                    <input class="form-control" type="file" name="import_file" id="import_file">
+                </div>
+                <button type="submit" class="btn btn-primary mb-3"><i class="fa fa-upload me-2"></i>Import</button>
+            </form>
+        @endif
         <div class="col-12">
             <div class="bg-light rounded h-100 p-4">
                 <h6 class="mb-4">Data Landmobile</h6>
@@ -31,7 +33,9 @@
                                 <th scope="col">STN_ADDR</th>
                                 <th scope="col">CITY</th>
                                 <th scope="col">MASA_LAKU</th>
-                                <th scope="col">Action</th>
+                                @if (auth()->user()->role == 'admin' || auth()->user()->role == 'operator')
+                                    <th scope="col">Action</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -47,22 +51,24 @@
                                     <td>{{ $landmobile->stn_addr }}</td>
                                     <td>{{ $landmobile->city }}</td>
                                     <td>{{ $landmobile->masa_laku }}</td>
-                                    <td>
-                                        <div
-                                            class="d-grid
+                                    @if (auth()->user()->role == 'admin' || auth()->user()->role == 'operator')
+                                        <td>
+                                            <div
+                                                class="d-grid
                                             gap-2 d-md-block text-center">
-                                            <a href="{{ route('landmobiles.edit', $landmobile->id) }}"
-                                                class="btn btn-warning btn-sm mx-2"><i class="fas fa-edit"></i> Edit</a>
-                                            <form action="{{ route('landmobiles.destroy', $landmobile->id) }}"
-                                                method="POST">
-                                                <input type="hidden" name="_method" value="DELETE" />
-                                                <input type="hidden" name="_token" value="{{ csrf_token() }}" />
-                                                <button class="btn btn-danger btn-sm show_confirm" type="submit"><i
-                                                        class="fa fa-trash"></i>
-                                                    Hapus</button>
-                                            </form>
-                                        </div>
-                                    </td>
+                                                <a href="{{ route('landmobiles.edit', $landmobile->id) }}"
+                                                    class="btn btn-warning btn-sm mx-2"><i class="fas fa-edit"></i> Edit</a>
+                                                <form action="{{ route('landmobiles.destroy', $landmobile->id) }}"
+                                                    method="POST">
+                                                    <input type="hidden" name="_method" value="DELETE" />
+                                                    <input type="hidden" name="_token" value="{{ csrf_token() }}" />
+                                                    <button class="btn btn-danger btn-sm show_confirm" type="submit"><i
+                                                            class="fa fa-trash"></i>
+                                                        Hapus</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>
